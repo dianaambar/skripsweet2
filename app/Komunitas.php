@@ -13,6 +13,10 @@ class Komunitas extends Model
 		return $this->hasMany('App\Relawan','komunitas_id');
 	}
 
+	public function donasi(){
+		return $this->hasMany('App\Donasi','komunitas_id');
+	}
+
 	public function user(){
 		return $this->belongsTo('App\User', 'user_id');
 	}

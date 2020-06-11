@@ -6,6 +6,7 @@ use App\Donatur;
 use App\User;
 use App\Http\Controllers\Controller;
 use App\Komunitas;
+use App\Relawan;
 use App\RoleUser;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -141,6 +142,51 @@ class RegisterController extends Controller
 		return response()->json([
             'message' => 'Donatur Successfully created!'
         ], 201);
+	}
+
+	public function registerRelawan(Request $request) {
+		$credsrelawan = validator($request->only('name', 'email', 'password', 'no_telp', 'alamat', 'jenis_kendaraan', 'jenis_kelamin', 'foto'), [
+			'name' => 'required|string',
+			'email' => 'required|string|min:6|max:50|unique:users',
+			'password' => 'required|string',
+			'no_telp'  => 'required|string',
+			'alamat' => 'required|string',
+			'jenis_kendaraan'  => 'required|string',
+			'jenis_kelamin' => 'required',
+			'foto' => 'required'
+		]);
+
+		if ($credsrelawan->fails()){
+			return response()->json( $credsrelawan->errors()->all(), 401 );
+		}
+
+		$user = User::create([
+			'name' => $request->get('name'),
+			'email' => $request->get('email'),
+			'password' => Hash::make($request->get('password')),
+			'no_telp' => $request->get('no_telp'),
+			'alamat' => $request->get('alamat')
+		]);
+		$user->save();
+
+		$relawan = new Relawan;
+		$relawan->jenis_kendaraan = $request->get('jenis_kendaraan');
+		$relawan->jenis_kelamin = $request->get('jenis_kelamin');
+		$relawan->user_id = $user->id;
+		$relawan->save();
+
+		$role = new RoleUser;
+		$role = new RoleUser;
+		$role->role_id = 3;
+		$role->user_id = $user->id;
+		$role->save();
+
+
+		//$relawan = Relawan::create([
+		//	'jenis_kendaraan' => $request->get('jenis_kendaraan'),
+		//	'jenis_kelamin' => $request->get('jenis_kelamin'),
+		//	'user_id' => $user->id
+		//]);
 	}
 
     /**

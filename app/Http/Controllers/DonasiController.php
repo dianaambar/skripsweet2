@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Donasi;
+use App\Donatur;
+use App\Komunitas;
+use App\PenerimaDonasi;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Message;
+use Illuminate\Support\Facades\Auth;
 
 class DonasiController extends Controller
 {
@@ -14,7 +19,11 @@ class DonasiController extends Controller
      */
     public function index()
     {
-        //
+		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+		$dns = Donasi::where('komunitas_id',$kom->id)->get();
+		return response()->json([
+			'donasi' => $dns
+		]);
     }
 
     /**
@@ -51,13 +60,83 @@ class DonasiController extends Controller
 			'donasi' => $donasi
 		]);
 	}
-	
-	public function updateRelawan(){
 
+	/**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+	public function updateDonasi($id){
+
+		$donasi = Donasi::find($id);
+
+		if($donasi){
+			$donasi->status = "Donasi diterima, Mencari Relawan";
+			$donasi->save();
+		}
+
+		return response()->json([
+			'updatedonasi' => $donasi
+		]);
 	}
 
-	public function updatePenerima(){
-		
+	/**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+	public function findRelawan(Request $request, $id){
+		$credsrelawan = validator($request->only('relawan_id'), [
+			'relawan_id' => 'required'
+		]);
+
+		if ($credsrelawan->fails()){
+			return response()([
+				'message' => 'Relawan tidak tersedia'
+			]);
+		}
+
+		$donasi = Donasi::find($id);
+
+		if ($donasi){
+			$donasi->relawan_id = $request->get('relawan_id');
+			$donasi->status = "Makanan akan dijemput oleh relawan";
+			$donasi->save();
+		}
+
+		return response()->json([
+			'message' => 'Donasi berhasil di update',
+			'updatedonasi' => $donasi
+		]);
+	}
+
+	/**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+	public function updatePenerimaDonasi(Request $request, $id){
+		$credspenerima = validator($request->only('penerima_id'), [
+			'penerima_id' => 'required'
+		]);
+
+		if ($credspenerima->fails()){
+			return response()([
+				'message' => 'Relawan tidak tersedia'
+			]);
+		}
+
+		$donasi = Donasi::find($id);
+
+		if($donasi){
+			$donasi->penerima_id = $request->get('penerima_id');
+			$donasi->status = "Donasi telah disalurkan";
+			$donasi->save();
+		}
+
+		return response()->json([
+			'updatedonasi' => $donasi
+		]);
 	}
 
     /**
