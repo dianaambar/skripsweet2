@@ -24,6 +24,7 @@ class CreateTableDonasi extends Migration
 			$table->string('status');
 			$table->string('latitude');
 			$table->string('longitude');
+			$table->boolean('accDonasi')->default(false);
             $table->timestamps();
         });
     }

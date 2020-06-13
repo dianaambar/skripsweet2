@@ -6,14 +6,14 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTableMakananDonasi extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('table_makanan_donasi', function (Blueprint $table) {
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('table_makanan_donasi', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->integer('makanan_id');
 			$table->integer('donasi_id');
@@ -26,18 +26,18 @@ class CreateTableMakananDonasi extends Migration
 			$table->boolean('berwarna');
 			$table->boolean('berubahrasa');
 			$table->boolean('berubahtesktur');
-			$table->text('notes');
-            $table->timestamps();
-        });
-    }
+			$table->text('notes')->nullable();
+			$table->timestamps();
+		});
+	}
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('table_makanan_donasi');
-    }
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::dropIfExists('table_makanan_donasi');
+	}
 }

@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
+use Auth;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class LoginController extends Controller
 {
-    /*
+	/*
     |--------------------------------------------------------------------------
     | Login Controller
     |--------------------------------------------------------------------------
@@ -22,14 +22,18 @@ class LoginController extends Controller
     */
 
 	use AuthenticatesUsers;
-	
-	public function login(Request $request){
+
+	public $successStatus = 200;
+
+	public function login(Request $request)
+	{
+
 		$login = $request->validate([
 			'email' => 'required|string',
 			'password' => 'required|string'
 		]);
 
-		if ( !Auth::attempt($login) ) {
+		if (!Auth::attempt($login)) {
 			return response([
 				'message' => 'invalid login credentials'
 			]);
@@ -41,22 +45,48 @@ class LoginController extends Controller
 			'user' => Auth::user(),
 			'access_token' => $accessToken
 		]);
+		//if (Auth::attempt([
+		//	'email' => request('email'),
+		//	'password' => request('password')
+		//	])) {
+		//		$user = Auth::user();
+		//		$success['token'] = $user->createToken('nApp')->accessToken;
+		//		return response()->json([
+		//			'success' => $success, $this->successStatus
+		//		]);
+		//	}
+		//	else {
+		//		return response()->json([
+		//			'error' => 'Unauthorized'
+		//		], 401);
+		//	}
 	}
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
+	public function user()
+	{
+		echo "test";
+		exit;
+		$user = Auth::user();
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
+		return response()->json([
+			'success' => $user
+		]);
+	}
+
+	/**
+	 * Where to redirect users after login.
+	 *
+	 * @var string
+	 */
+	protected $redirectTo = '/home';
+
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware('guest')->except('logout');
+	}
 }

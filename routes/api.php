@@ -14,25 +14,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:api')->group( function(){
-//	Route::post('/login', 'Auth\LoginController@login');
-//	Route::post('/register', 'Auth\RegisterController@register');
-//	Route::get('/getuser', 'Auth\UserController@user');
-//	Route::post('/regiskomunitas', 'Auth\RegisterController@registKomunitas');
-//	Route::post('/regisdonatur', 'Auth\RegisterController@registDonatur');
-//});
+Route::post('/login', 'Auth\LoginController@login');
+Route::post('/register', 'Auth\RegisterController@register');
+Route::post('/regiskomunitas', 'Auth\RegisterController@registKomunitas');
+Route::post('/regisdonatur', 'Auth\RegisterController@registDonatur');
 
-Route::prefix('/user')->group( function(){
-	Route::post('/login', 'Auth\LoginController@login');
-	Route::post('/register', 'Auth\RegisterController@register');
-	Route::get('/getuser', 'Auth\UserController@user');
-	Route::post('/regiskomunitas', 'Auth\RegisterController@registKomunitas');
-	Route::post('/regisdonatur', 'Auth\RegisterController@registDonatur');
+Route::group(['middleware' => 'auth:api'], function () {
+	Route::get('/getuser', 'UserController@user');
+	
 });
 
 Route::post('createdonasi', 'DonasiController@createDonasi');
-Route::post('updatedonasi/{id}', 'DonasiController@updateDonasi');
-Route::post('updaterelawan/{id}', 'DonasiController@findRelawan');
-Route::post('updatepenerima/{id}', 'DonasiController@updatePenerimaDonasi');
-Route::get('getdonasi', 'DonasiController@index');
-Route::get('getuser', 'UserController@user');
+	Route::post('updatedonasi/{id}', 'DonasiController@updateDonasi');
+	Route::post('updaterelawan/{id}', 'DonasiController@findRelawan');
+	Route::post('accrelawan/{id}', 'DonasiController@accRelawan');
+	Route::post('updatepenerima/{id}', 'DonasiController@updatePenerimaDonasi');
+	
+
+	Route::get('getdonasi', 'DonasiController@index');
+
+
+
+//Route::prefix('/user')->group( function(){
+//	Route::post('/login', 'Auth\LoginController@login');
+//	Route::post('/register', 'Auth\RegisterController@register');
+//	Route::get('/getuser', 'Auth\LoginController@user');
+//	Route::post('/regiskomunitas', 'Auth\RegisterController@registKomunitas');
+//	Route::post('/regisdonatur', 'Auth\RegisterController@registDonatur');
+//});
