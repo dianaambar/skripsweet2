@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
-    /*
+	/*
     |--------------------------------------------------------------------------
     | Register Controller
     |--------------------------------------------------------------------------
@@ -27,8 +27,9 @@ class RegisterController extends Controller
     */
 
 	use RegistersUsers;
-	
-	public function register(Request $request){
+
+	public function register(Request $request)
+	{
 		$credentials = validator($request->only('name', 'email', 'password', 'no_telp', 'alamat'), [
 			'name' => 'required|string',
 			'email' => 'required|string|min:6|max:50|unique:users',
@@ -37,8 +38,8 @@ class RegisterController extends Controller
 			'alamat' => 'required|string',
 		]);
 
-		if ($credentials->fails()){
-			return response()->json( $credentials->errors()->all(), 401 );
+		if ($credentials->fails()) {
+			return response()->json($credentials->errors()->all(), 401);
 		}
 
 		$user = User::create([
@@ -56,11 +57,12 @@ class RegisterController extends Controller
 		$role->save();
 
 		return response()->json([
-            'message' => 'User Successfully created!'
-        ], 201);
+			'message' => 'User Successfully created!'
+		], 201);
 	}
 
-	public function registKomunitas(Request $request){
+	public function registKomunitas(Request $request)
+	{
 		$credentials = validator($request->only('name', 'email', 'password', 'no_telp', 'alamat', 'legalitas', 'tgl_berdiri', 'foto_komunitas', 'status'), [
 			'name' => 'required|string',
 			'email' => 'required|string|min:6|max:50|unique:users',
@@ -72,26 +74,39 @@ class RegisterController extends Controller
 			'foto_komunitas'
 		]);
 
-		if ($credentials->fails()){
-			return response()->json( $credentials->errors()->all(), 401 );
+		if ($credentials->fails()) {
+			return response()->json($credentials->errors()->all(), 401);
 		}
+		$user = new User;
+		$user->name = $request->get('name');
+		$user->email = $request->get('email');
+		$user->password = Hash::make($request->get('password'));
+		$user->no_telp = $request->get('no_telp');
+		$user->alamat = $request->get('alamat');
 
-		$user = User::create([
-			'name' => $request->get('name'),
-			'email' => $request->get('email'),
-			'password' => Hash::make($request->get('password')),
-			'no_telp' => $request->get('no_telp'),
-			'alamat' => $request->get('alamat')
-		]);
+		//$user = User::create([
+		//	'name' => $request->get('name'),
+		//	'email' => $request->get('email'),
+		//	'password' => Hash::make($request->get('password')),
+		//	'no_telp' => $request->get('no_telp'),
+		//	'alamat' => $request->get('alamat')
+		//]);
 		$user->save();
 
-		$komunitas = Komunitas::create([
-			'legalitas' => $request->get('legalitas'),
-			'tgl_berdiri' => $request->get('tgl_berdiri'),
-			'foto_komunitas' => $request->get('foto_komunitas'),
-			'status' => false,
-			'user_id' => $user->id
-		]);
+		$komunitas = new Komunitas;
+		$komunitas->legalitas = $request->get('legalitas');
+		$komunitas->tgl_berdiri = $request->get('tgl_berdiri');
+		$komunitas->foto_komunitas = $request->get('foto_komunitas');
+		$komunitas->status = false;
+		$komunitas->user_id = $user->id;
+
+		//$komunitas = Komunitas::create([
+		//	'legalitas' => $request->get('legalitas'),
+		//	'tgl_berdiri' => $request->get('tgl_berdiri'),
+		//	'foto_komunitas' => $request->get('foto_komunitas'),
+		//	'status' => false,
+		//	'user_id' => $user->id
+		//]);
 
 		$komunitas->save();
 
@@ -101,11 +116,14 @@ class RegisterController extends Controller
 		$role->save();
 
 		return response()->json([
-            'message' => 'Komunitas Successfully created!'
-        ], 201);
+			'message' => 'Komunitas Successfully created!',
+			'user' => $user,
+			'komunitas' => $komunitas
+		], 201);
 	}
 
-	public function registDonatur(Request $request){
+	public function registDonatur(Request $request)
+	{
 		$credentials = validator($request->only('name', 'email', 'password', 'no_telp', 'jenis_kelamin', 'alamat'), [
 			'name' => 'required|string',
 			'email' => 'required|string|min:6|max:50|unique:users',
@@ -115,8 +133,8 @@ class RegisterController extends Controller
 			'alamat' => 'required|string',
 		]);
 
-		if ($credentials->fails()){
-			return response()->json( $credentials->errors()->all(), 401 );
+		if ($credentials->fails()) {
+			return response()->json($credentials->errors()->all(), 401);
 		}
 
 		$user = User::create([
@@ -140,12 +158,13 @@ class RegisterController extends Controller
 		$role->save();
 
 		return response()->json([
-            'message' => 'Donatur Successfully created!'
-        ], 201);
+			'message' => 'Donatur Successfully created!'
+		], 201);
 	}
 
-	public function registerRelawan(Request $request) {
-		$credsrelawan = validator($request->only('name', 'email', 'password', 'no_telp', 'alamat', 'jenis_kendaraan', 'jenis_kelamin', 'foto'), [
+	public function registRelawan(Request $request)
+	{
+		$credsrelawan = validator($request->only('name', 'email', 'password', 'no_telp', 'alamat', 'jenis_kendaraan', 'jenis_kelamin', 'foto_relawan'), [
 			'name' => 'required|string',
 			'email' => 'required|string|min:6|max:50|unique:users',
 			'password' => 'required|string',
@@ -153,11 +172,11 @@ class RegisterController extends Controller
 			'alamat' => 'required|string',
 			'jenis_kendaraan'  => 'required|string',
 			'jenis_kelamin' => 'required',
-			'foto' => 'required'
+			'foto_relawan' => 'required|string'
 		]);
 
-		if ($credsrelawan->fails()){
-			return response()->json( $credsrelawan->errors()->all(), 401 );
+		if ($credsrelawan->fails()) {
+			return response()->json($credsrelawan->errors()->all(), 401);
 		}
 
 		$user = User::create([
@@ -170,9 +189,12 @@ class RegisterController extends Controller
 		$user->save();
 
 		$relawan = new Relawan;
+		$relawan->komunitas_id = $request->komunitas_id;
 		$relawan->jenis_kendaraan = $request->get('jenis_kendaraan');
 		$relawan->jenis_kelamin = $request->get('jenis_kelamin');
+		$relawan->foto_relawan = $request->get('foto_relawan');
 		$relawan->user_id = $user->id;
+
 		$relawan->save();
 
 		$role = new RoleUser;
@@ -189,52 +211,52 @@ class RegisterController extends Controller
 		//]);
 	}
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
+	/**
+	 * Where to redirect users after registration.
+	 *
+	 * @var string
+	 */
+	protected $redirectTo = '/home';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
+	/**
+	 * Create a new controller instance.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->middleware('guest');
 	}
-	
-	
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-    }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-    }
+
+	/**
+	 * Get a validator for an incoming registration request.
+	 *
+	 * @param  array  $data
+	 * @return \Illuminate\Contracts\Validation\Validator
+	 */
+	protected function validator(array $data)
+	{
+		return Validator::make($data, [
+			'name' => ['required', 'string', 'max:255'],
+			'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+			'password' => ['required', 'string', 'min:8', 'confirmed'],
+		]);
+	}
+
+	/**
+	 * Create a new user instance after a valid registration.
+	 *
+	 * @param  array  $data
+	 * @return \App\User
+	 */
+	protected function create(array $data)
+	{
+		return User::create([
+			'name' => $data['name'],
+			'email' => $data['email'],
+			'password' => Hash::make($data['password']),
+		]);
+	}
 }

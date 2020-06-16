@@ -25,7 +25,7 @@ class CreateTableMakananDonasi extends Migration
 			$table->boolean('bau');
 			$table->boolean('berwarna');
 			$table->boolean('berubahrasa');
-			$table->boolean('berubahtesktur');
+			$table->boolean('berubahtekstur');
 			$table->text('notes')->nullable();
 			$table->timestamps();
 		});

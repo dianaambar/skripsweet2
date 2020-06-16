@@ -6,31 +6,31 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTableRelawan extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('table_relawan', function (Blueprint $table) {
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('table_relawan', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->integer('user_id');
 			$table->integer('komunitas_id');
 			$table->string('jenis_kendaraan');
 			$table->string('jenis_kelamin');
 			$table->text('foto_relawan');
-            $table->timestamps();
-        });
-    }
+			$table->timestamps();
+		});
+	}
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('table_relawan');
-    }
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::dropIfExists('table_relawan');
+	}
 }
