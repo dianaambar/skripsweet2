@@ -24,9 +24,12 @@ class DonasiController extends Controller
 
 		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
 		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan')
-			//->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
-			//->join('users', 'users.id', 'table_donatur.user_id')
+			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+			->join('users', 'users.id', 'table_donatur.user_id')
+			->select('table_donasi.*', 'users.name')
 			->where('komunitas_id', $kom->id)
+			//->where('table_donasi.id', $id)
+			//->first();
 			->get();
 
 		//$dns = Donasi::with('makananDonasi')->where('komunitas_id', $kom->id)->get();
@@ -46,6 +49,23 @@ class DonasiController extends Controller
 
 		//return Auth::user();
 		//return $kom;
+	}
+
+	public function showDetail($id)
+	{
+		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan')
+			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+			//->join('table_relawan', 'table_relawan.id', 'table_donasi.relawan_id')
+			->join('users', 'users.id', 'table_donatur.user_id')
+			->select('table_donasi.*', 'users.name')
+			->where('komunitas_id', $kom->id)
+			->where('table_donasi.id', $id)
+			->first();
+
+		return response()->json([
+			'donasi' => $dns
+		]);
 	}
 
 	public function listDonasi()

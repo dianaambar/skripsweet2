@@ -45,21 +45,6 @@ class LoginController extends Controller
 			'user' => Auth::user(),
 			'access_token' => $accessToken
 		]);
-		//if (Auth::attempt([
-		//	'email' => request('email'),
-		//	'password' => request('password')
-		//	])) {
-		//		$user = Auth::user();
-		//		$success['token'] = $user->createToken('nApp')->accessToken;
-		//		return response()->json([
-		//			'success' => $success, $this->successStatus
-		//		]);
-		//	}
-		//	else {
-		//		return response()->json([
-		//			'error' => 'Unauthorized'
-		//		], 401);
-		//	}
 	}
 
 	public function user()
