@@ -8,4 +8,9 @@ class Donasi extends Model
 {
 	protected $table = "table_donasi";
 	protected $guarded = ['id'];
+
+	public function makananDonasi()
+	{
+		return $this->hasMany('App\MakananDonasi', 'donasi_id');
+	}
 }

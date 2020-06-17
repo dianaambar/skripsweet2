@@ -7,6 +7,7 @@ use App\Donatur;
 use App\Komunitas;
 use App\MakananDonasi;
 use App\PenerimaDonasi;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Auth;
@@ -20,8 +21,41 @@ class DonasiController extends Controller
 	 */
 	public function index()
 	{
+
 		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
-		$dns = Donasi::where('komunitas_id', $kom->id)->get();
+		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan')
+			//->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+			//->join('users', 'users.id', 'table_donatur.user_id')
+			->where('komunitas_id', $kom->id)
+			->get();
+
+		//$dns = Donasi::with('makananDonasi')->where('komunitas_id', $kom->id)->get();
+		//for($i = 0;$i<count($dns);$i++){
+		//	for($j = 0;$j<count($dns[$i]['makanan_donasi']);$j++){
+		//		$dns[$i]['makanan_donasi'][$j]['nama_makanan'] = $dns[$i]['makanan_donasi'][$j]->makanan['nama_makanan'];
+		//		$dns[$i]['makanan_donasi'][$j]['jenis_makanan'] = $$dns[$i]['makanan_donasi'][$j]->makanan->jenis_makanan->nama_jenis;
+		//	}
+		//}
+
+		//$komunitas = User::find(Auth::user()->id)->name;
+		return response()->json([
+			'donasi' => $dns
+		]);
+
+		//$listdonasi = Donasi::select()
+
+		//return Auth::user();
+		//return $kom;
+	}
+
+	public function listDonasi()
+	{
+		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+		$dns = Donasi::join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+			->join('users', 'users.id', 'table_donatur.user_id')
+			->where('komunitas_id', $kom->id)
+			->get();
+
 		return response()->json([
 			'donasi' => $dns
 		]);
@@ -41,7 +75,7 @@ class DonasiController extends Controller
 			'longitude' => 'required',
 			'tgl_produksi' => 'required',
 			'tgl_kadaluwarsa' => 'required',
-			'jumlah' => 'required|integer',
+			'jumlah' => 'required',
 			'unit' => 'required',
 			'jamur',
 			'bau',
@@ -66,23 +100,24 @@ class DonasiController extends Controller
 		$donasi->save();
 
 		$makananDonasi = new MakananDonasi;
+		$makananDonasi->makanan_id = $request->makanan_id;
 		$makananDonasi->donasi_id = $donasi->id;
-		$makananDonasi->jumlah = $request()->get('jumlah');
-		$makananDonasi->unit = $request()->get('unit');
-		$makananDonasi->tgl_kadaluwarsa = $request()->get('tgl_kadaluwarsa');
-		$makananDonasi->tgl_produksi = $request()->get('tgl_produksi');
-		$makananDonasi->jamur = $request()->get('jamur');
-		$makananDonasi->bau = $request()->get('bau');
-		$makananDonasi->berwarna = $request()->get('berwarna');
-		$makananDonasi->berubahrasa = $request()->get('berubahrasa');
-		$makananDonasi->berubahtekstur = $request()->get('berubahtekstur');
-		$makananDonasi->notes = $request()->get('notes');
+		$makananDonasi->jumlah = $request->get('jumlah');
+		$makananDonasi->unit = $request->get('unit');
+		$makananDonasi->tgl_kadaluwarsa = $request->get('tgl_kadaluwarsa');
+		$makananDonasi->tgl_produksi = $request->get('tgl_produksi');
+		$makananDonasi->jamur = $request->get('jamur');
+		$makananDonasi->bau = $request->get('bau');
+		$makananDonasi->berwarna = $request->get('berwarna');
+		$makananDonasi->berubahrasa = $request->get('berubahrasa');
+		$makananDonasi->berubahtekstur = $request->get('berubahtekstur');
+		$makananDonasi->notes = $request->get('notes');
 		$makananDonasi->save();
 
 		return response()->json([
 			'message' => 'Donasi created',
 			'donasi' => $donasi,
-			'makanandonasi' => $makananDonasi
+			'makanandonasi' => $makananDonasi,
 		]);
 	}
 
