@@ -23,13 +23,14 @@ Route::post('/regisrelawan', 'Auth\RegisterController@registRelawan');
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/getuser', 'UserController@user');
 	Route::get('/donasikomunitas', 'DonasiController@index');
+	Route::get('/donasikomunitas/{id}', 'DonasiController@showDetail');
 	Route::get('/listdonasi', 'DonasiController@listDonasi');
 	Route::get('/donasidonatur', 'DonaturController@index');
 	Route::get('/relawankomunitas', 'KomunitasController@index');
+	Route::post('updatedonasi/{id}', 'DonasiController@updateDonasi');
 });
 
 Route::post('createdonasi', 'DonasiController@createDonasi');
-Route::post('updatedonasi/{id}', 'DonasiController@updateDonasi');
 Route::post('updaterelawan/{id}', 'DonasiController@findRelawan');
 Route::post('accrelawan/{id}', 'DonasiController@accRelawan');
 Route::post('updatepenerima/{id}', 'DonasiController@updatePenerimaDonasi');

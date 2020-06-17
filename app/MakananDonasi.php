@@ -13,4 +13,9 @@ class MakananDonasi extends Model
 	{
 		return $this->belongsTo('App\Makanan', 'makanan_id');
 	}
+
+	public function m()
+	{
+		return $this->makanan()->first();
+	}
 }
