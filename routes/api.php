@@ -21,10 +21,10 @@ Route::post('/regisdonatur', 'Auth\RegisterController@registDonatur');
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/getuser', 'UserController@user');
+	Route::post('createdonasi', 'DonasiController@createDonasi');
 	
 });
 
-Route::post('createdonasi', 'DonasiController@createDonasi');
 	Route::post('updatedonasi/{id}', 'DonasiController@updateDonasi');
 	Route::post('updaterelawan/{id}', 'DonasiController@findRelawan');
 	Route::post('accrelawan/{id}', 'DonasiController@accRelawan');
