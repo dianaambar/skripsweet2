@@ -31,9 +31,13 @@ class KomunitasController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function create()
+	public function showKomunitas()
 	{
-		//
+		$komunitas = Komunitas::with('user', 'relawan')->get();
+
+		return response()->json([
+			'komunitas' => $komunitas,
+		]);
 	}
 
 	/**
