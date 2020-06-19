@@ -23,13 +23,11 @@ class DonasiController extends Controller
 	{
 
 		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
-		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan')
+		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan', 'relawan.user')
 			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
 			->join('users', 'users.id', 'table_donatur.user_id')
 			->select('table_donasi.*', 'users.name')
 			->where('komunitas_id', $kom->id)
-			//->where('table_donasi.id', $id)
-			//->first();
 			->get();
 
 		//$dns = Donasi::with('makananDonasi')->where('komunitas_id', $kom->id)->get();
@@ -54,10 +52,12 @@ class DonasiController extends Controller
 	public function showDetail($id)
 	{
 		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
-		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan')
+		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan', 'relawan.user', 'penerimaDonasi')
 			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
 			//->join('table_relawan', 'table_relawan.id', 'table_donasi.relawan_id')
 			->join('users', 'users.id', 'table_donatur.user_id')
+			//->join('table_penerima_donasi', 'table_penerima_donasi.id', 'table_donasi.penerima_id')
+			//->join('users', 'users.id', 'table_relawan.user_id')
 			->select('table_donasi.*', 'users.name')
 			->where('komunitas_id', $kom->id)
 			->where('table_donasi.id', $id)
@@ -168,20 +168,20 @@ class DonasiController extends Controller
 	 */
 	public function findRelawan(Request $request, $id)
 	{
-		$credsrelawan = validator($request->only('relawan_id'), [
-			'relawan_id' => 'required'
-		]);
+		//$credsrelawan = validator($request->only('relawan_id'), [
+		//	'relawan_id' => 'required'
+		//]);
 
-		if ($credsrelawan->fails()) {
-			return response()([
-				'message' => 'Relawan tidak tersedia'
-			]);
-		}
+		//if ($credsrelawan->fails()) {
+		//	return response()([
+		//		'message' => 'Relawan tidak tersedia'
+		//	]);
+		//}
 
 		$donasi = Donasi::find($id);
 
 		if ($donasi) {
-			$donasi->relawan_id = $request->get('relawan_id');
+			$donasi->relawan_id = $request->relawan_id;
 			$donasi->status = "Menunggu konfirmasi relawan";
 			$donasi->save();
 		}
@@ -199,13 +199,13 @@ class DonasiController extends Controller
 	 */
 	public function accRelawan(Request $request, $id)
 	{
-		$accCreds = validator($request->only('accDonasi'), [
-			'accDonasi' => 'required'
-		]);
+		//$accCreds = validator($request->only('accDonasi'), [
+		//	'accDonasi' => 'required'
+		//]);
 
-		if ($accCreds->fails()) {
-			return response()->json($accCreds->errors()->all(), 401);
-		}
+		//if ($accCreds->fails()) {
+		//	return response()->json($accCreds->errors()->all(), 401);
+		//}
 
 		$donasi = Donasi::find($id);
 
@@ -215,13 +215,14 @@ class DonasiController extends Controller
 
 			if ($acc == true) {
 				$donasi->status = "Makanan akan dijemput oleh Relawan";
-				$donasi->save();
+				//$donasi->save();
 			} else {
-				$donasi->status = "Menunggu konfirmasi relawan";
+				$donasi->status = "Menunggu konfirmasi Relawan";
 				$donasi->relawan_id = null;
-				$donasi->save();
+				//$donasi->save();
 			}
 		}
+		$donasi->save();
 
 		return response()->json([
 			'message' => 'Donasi berhasil di update',

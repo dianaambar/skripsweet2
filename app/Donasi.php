@@ -14,6 +14,16 @@ class Donasi extends Model
 		return $this->hasMany('App\MakananDonasi', 'donasi_id');
 	}
 
+	public function relawan()
+	{
+		return $this->belongsTo('App\Relawan', 'relawan_id');
+	}
+
+	public function penerimaDonasi()
+	{
+		return $this->belongsTo('App\PenerimaDonasi', 'penerima_id');
+	}
+
 	public function m()
 	{
 		return $this->makananDonasi()->first();

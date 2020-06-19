@@ -14,10 +14,11 @@ class KomunitasController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function index()
+	public function getRelawan()
 	{
 		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
 		$relawan = Relawan::join('users', 'users.id', 'table_relawan.user_id')
+			->select('table_relawan.*', 'users.name', 'users.alamat', 'users.no_telp')
 			->where('komunitas_id', $kom->id)->get();
 
 		return response()->json([
@@ -30,9 +31,13 @@ class KomunitasController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function create()
+	public function showKomunitas()
 	{
-		//
+		$komunitas = Komunitas::with('user', 'relawan')->get();
+
+		return response()->json([
+			'komunitas' => $komunitas,
+		]);
 	}
 
 	/**
