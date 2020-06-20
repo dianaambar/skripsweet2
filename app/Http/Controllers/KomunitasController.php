@@ -33,8 +33,7 @@ class KomunitasController extends Controller
 	 */
 	public function showKomunitas()
 	{
-		$komunitas = Komunitas::with('user', 'relawan')->get();
-
+		$komunitas = Komunitas::with('user')->get();
 		return response()->json([
 			'komunitas' => $komunitas,
 		]);

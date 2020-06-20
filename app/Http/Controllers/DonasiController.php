@@ -213,11 +213,11 @@ class DonasiController extends Controller
 			$donasi->accDonasi = $request->get('accDonasi');
 			$acc = $donasi->accDonasi;
 
-			if ($acc == true) {
+			if ($acc == 'true') {
 				$donasi->status = "Makanan akan dijemput oleh Relawan";
 				//$donasi->save();
 			} else {
-				$donasi->status = "Menunggu konfirmasi Relawan";
+				$donasi->status = "Donasi diterima, Mencari Relawan";
 				$donasi->relawan_id = null;
 				//$donasi->save();
 			}

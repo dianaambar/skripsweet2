@@ -20,6 +20,8 @@ class CreateTableRelawan extends Migration
 			$table->string('jenis_kendaraan');
 			$table->string('jenis_kelamin');
 			$table->text('foto_relawan');
+			$table->string('latitude');
+			$table->string('longitude');
 			$table->timestamps();
 		});
 	}

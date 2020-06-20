@@ -75,7 +75,7 @@ class RegisterController extends Controller
 		]);
 
 		if ($credentials->fails()) {
-			return response()->json($credentials->errors()->all(), 401);
+			return "error";
 		}
 		$user = new User;
 		$user->name = $request->get('name');
@@ -93,11 +93,24 @@ class RegisterController extends Controller
 		//]);
 		$user->save();
 
+
 		$komunitas = new Komunitas;
 		$komunitas->legalitas = $request->get('legalitas');
 		$komunitas->tgl_berdiri = $request->get('tgl_berdiri');
+		//if ($request->hasFile('foto_komunitas')) {
+		//	$foto = $request->get('foto_komunitas');
+		//	$imageName = time() . $foto->getClientOriginalName();
+		//	$upload_path = 'public/'.$imageName;
+
+		//	//$image = $upload_path . $saveFoto;
+		//	//$success = $foto->move($upload_path, $saveFoto);
+		//	//$komunitas->foto_komunitas = $image;
+		//}
 		$komunitas->foto_komunitas = $request->get('foto_komunitas');
 		$komunitas->status = false;
+
+
+
 		$komunitas->user_id = $user->id;
 
 		//$komunitas = Komunitas::create([
@@ -172,7 +185,9 @@ class RegisterController extends Controller
 			'alamat' => 'required|string',
 			'jenis_kendaraan'  => 'required|string',
 			'jenis_kelamin' => 'required',
-			'foto_relawan' => 'required|string'
+			'foto_relawan' => 'required|string',
+			'latitude',
+			'longitude'
 		]);
 
 		if ($credsrelawan->fails()) {
@@ -185,6 +200,7 @@ class RegisterController extends Controller
 			'password' => Hash::make($request->get('password')),
 			'no_telp' => $request->get('no_telp'),
 			'alamat' => $request->get('alamat')
+
 		]);
 		$user->save();
 
@@ -193,6 +209,8 @@ class RegisterController extends Controller
 		$relawan->jenis_kendaraan = $request->get('jenis_kendaraan');
 		$relawan->jenis_kelamin = $request->get('jenis_kelamin');
 		$relawan->foto_relawan = $request->get('foto_relawan');
+		$relawan->latitude = $request->get('latitude');
+		$relawan->longitude = $request->get('longitude');
 		$relawan->user_id = $user->id;
 
 		$relawan->save();
