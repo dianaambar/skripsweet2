@@ -26,14 +26,14 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/donasikomunitas/{id}', 'DonasiController@showDetail');
 	Route::get('/listdonasi', 'DonasiController@listDonasi');
 	Route::get('/donasidonatur', 'DonaturController@index');
-	Route::put('updatedonasi/{id}', 'DonasiController@updateDonasi');
-	Route::post('createdonasi', 'DonasiController@createDonasi');
-	Route::post('selectrelawan/{id}', 'DonasiController@findRelawan');
-	Route::post('accrelawan/{id}', 'DonasiController@accRelawan');
-	Route::post('updatepenerima/{id}', 'DonasiController@updatePenerimaDonasi');
-	Route::get('historydonasi', 'DonasiController@donasiSelesai');
+	Route::put('/updatedonasi/{id}', 'DonasiController@updateDonasi');
+	Route::post('/createdonasi', 'DonasiController@createDonasi');
+	Route::post('/selectrelawan/{id}', 'DonasiController@findRelawan');
+	Route::post('/accrelawan/{id}', 'DonasiController@accRelawan');
+	Route::post('/updatepenerima/{id}', 'DonasiController@updatePenerimaDonasi');
+	Route::get('/donasiselesai', 'DonasiController@donasiSelesai');
 
-	Route::get('history', 'KomunitasController@allTransactions');
+	Route::get('/history', 'KomunitasController@allTransactions');
 	Route::get('/relawankomunitas', 'KomunitasController@getRelawan');
 	Route::get('/komunitas', 'KomunitasController@showKomunitas');
 	Route::get('/datakomunitas', 'KomunitasController@dataKomunitas');
