@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Donasi;
 use App\Komunitas;
 use App\Relawan;
+use App\RoleUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +38,35 @@ class KomunitasController extends Controller
 		$komunitas = Komunitas::with('user')->get();
 		return response()->json([
 			'komunitas' => $komunitas,
+		]);
+	}
+
+	public function allTransactions()
+	{
+		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan', 'relawan.user', 'penerimaDonasi', 'komunitas')
+			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+			//->join('table_relawan', 'table_relawan.id', 'table_donasi.relawan_id')
+			->join('users', 'users.id', 'table_donatur.user_id')
+			//->join('table_penerima_donasi', 'table_penerima_donasi.id', 'table_donasi.penerima_id')
+			//->join('users', 'users.id', 'table_relawan.user_id')
+			->select('table_donasi.*', 'users.name')
+			//->where('komunitas_id', $kom->id)
+			//->where('table_donasi.id', $id)
+			->get();
+
+		return response()->json([
+			'donasi' => $dns
+		]);
+	}
+
+	public function dataKomunitas()
+	{
+		$komunitas = Komunitas::where('user_id', Auth::user()->id)
+			->join('users', 'users.id', 'table_komunitas.user_id')
+			->first();
+
+		return response()->json([
+			'komunitas' => $komunitas
 		]);
 	}
 

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image as Image;
 
 class RegisterController extends Controller
 {
@@ -75,7 +76,7 @@ class RegisterController extends Controller
 		]);
 
 		if ($credentials->fails()) {
-			return "error";
+			return response()->json($credentials->errors()->all(), 401);
 		}
 		$user = new User;
 		$user->name = $request->get('name');
@@ -97,16 +98,23 @@ class RegisterController extends Controller
 		$komunitas = new Komunitas;
 		$komunitas->legalitas = $request->get('legalitas');
 		$komunitas->tgl_berdiri = $request->get('tgl_berdiri');
-		//if ($request->hasFile('foto_komunitas')) {
-		//	$foto = $request->get('foto_komunitas');
-		//	$imageName = time() . $foto->getClientOriginalName();
-		//	$upload_path = 'public/'.$imageName;
+		if ($request->hasFile('foto_komunitas')) {
 
-		//	//$image = $upload_path . $saveFoto;
-		//	//$success = $foto->move($upload_path, $saveFoto);
-		//	//$komunitas->foto_komunitas = $image;
-		//}
-		$komunitas->foto_komunitas = $request->get('foto_komunitas');
+			//$imagePath = storage_path() . '/app/public/';
+			$image = $request->file('foto_komunitas');
+			$imageName = str_random(8) . '.' . $image->getClientOriginalExtension();
+			$image->move('images', $imageName);
+			$imagePath = 'http://localhost:8000/images' . '/' . $imageName;
+
+			$komunitas->foto_komunitas = $imagePath;
+			//Image::make($image)->save($imagePath . $imageName);
+
+
+			//$image = $upload_path . $saveFoto;
+			//$success = $foto->move($upload_path, $saveFoto);
+			//$komunitas->foto_komunitas = $image;
+		}
+		//$komunitas->foto_komunitas = $request->get('foto_komunitas');
 		$komunitas->status = false;
 
 
@@ -177,14 +185,45 @@ class RegisterController extends Controller
 
 	public function registRelawan(Request $request)
 	{
-		$credsrelawan = validator($request->only('name', 'email', 'password', 'no_telp', 'alamat', 'jenis_kendaraan', 'jenis_kelamin', 'foto_relawan'), [
+		$credsrelawan = validator($request->only(
+			'name',
+			'email',
+			'password',
+			'no_telp',
+			'alamat',
+			'nama_panggilan',
+			'jenis_kelamin',
+			'foto_relawan',
+			'agama',
+			'gol_darah',
+			'kabupaten_kota',
+			'provinsi',
+			'tempat_lahir',
+			'tgl_lahir',
+			'pekerjaan',
+			'pend_terakhir',
+			'organisasi_ongoing',
+			'jenis_sim',
+			'motivasi'
+		), [
 			'name' => 'required|string',
 			'email' => 'required|string|min:6|max:50|unique:users',
 			'password' => 'required|string',
 			'no_telp'  => 'required|string',
 			'alamat' => 'required|string',
-			'jenis_kendaraan'  => 'required|string',
+			'nama_panggilan' => 'required',
 			'jenis_kelamin' => 'required',
+			'agama' => 'required',
+			'gol_darah' => 'required',
+			'kabupaten_kota' => 'required',
+			'provinsi' => 'required',
+			'tempat_lahir' => 'required',
+			'tgl_lahir' => 'required',
+			'pekerjaan' => 'required',
+			'pend_terakhir' => 'required',
+			'organisasi_ongoing' => 'required',
+			'jenis_sim' => 'required',
+			'motivasi' => 'required',
 			'foto_relawan' => 'required|string',
 			'latitude',
 			'longitude'
@@ -206,8 +245,20 @@ class RegisterController extends Controller
 
 		$relawan = new Relawan;
 		$relawan->komunitas_id = $request->komunitas_id;
-		$relawan->jenis_kendaraan = $request->get('jenis_kendaraan');
+		//$relawan->jenis_kendaraan = $request->get('jenis_kendaraan');
+		$relawan->nama_panggilan = $request->get('nama_panggilan');
 		$relawan->jenis_kelamin = $request->get('jenis_kelamin');
+		$relawan->agama = $request->get('agama');
+		$relawan->gol_darah = $request->get('gol_darah');
+		$relawan->kabupaten_kota = $request->get('kabupaten_kota');
+		$relawan->provinsi = $request->get('provinsi');
+		$relawan->tempat_lahir = $request->get('tempat_lahir');
+		$relawan->tgl_lahir = $request->get('tgl_lahir');
+		$relawan->pekerjaan = $request->get('pekerjaan');
+		$relawan->pend_terakhir = $request->get('pend_terakhir');
+		$relawan->organisasi_ongoing = $request->get('organisasi_ongoing');
+		$relawan->jenis_sim = $request->get('jenis_sim');
+		$relawan->motivasi = $request->get('motivasi');
 		$relawan->foto_relawan = $request->get('foto_relawan');
 		$relawan->latitude = $request->get('latitude');
 		$relawan->longitude = $request->get('longitude');
@@ -221,6 +272,9 @@ class RegisterController extends Controller
 		$role->user_id = $user->id;
 		$role->save();
 
+		return response()->json([
+			'relawan' => $relawan
+		]);
 
 		//$relawan = Relawan::create([
 		//	'jenis_kendaraan' => $request->get('jenis_kendaraan'),

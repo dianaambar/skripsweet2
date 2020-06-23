@@ -17,11 +17,23 @@ class CreateTableRelawan extends Migration
 			$table->bigIncrements('id');
 			$table->integer('user_id');
 			$table->integer('komunitas_id');
-			$table->string('jenis_kendaraan');
+			$table->string('nama_panggilan');
 			$table->string('jenis_kelamin');
+			$table->string('agama');
+			$table->string('gol_darah');
+			$table->string('kabupaten_kota');
+			$table->string('provinsi');
+			$table->string('tempat_lahir');
+			$table->date('tgl_lahir');
+			$table->string('pekerjaan');
+			//$table->string('media_sosial');
+			$table->string('pend_terakhir');
+			$table->string('organisasi_ongoing');
+			$table->string('jenis_sim');
 			$table->text('foto_relawan');
-			$table->string('latitude');
-			$table->string('longitude');
+			$table->string('motivasi');
+			$table->string('latitude')->nullable();
+			$table->string('longitude')->nullable();
 			$table->timestamps();
 		});
 	}
