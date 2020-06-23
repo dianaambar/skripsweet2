@@ -6,14 +6,14 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTableDonasi extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('table_donasi', function (Blueprint $table) {
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
+		Schema::create('table_donasi', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->integer('komunitas_id');
 			$table->integer('donatur_id');
@@ -24,18 +24,20 @@ class CreateTableDonasi extends Migration
 			$table->string('status');
 			$table->string('latitude');
 			$table->string('longitude');
+			$table->text('notes')->nullable();
+			$table->text('foto')->nullable();
 			$table->boolean('accDonasi')->default(false);
-            $table->timestamps();
-        });
-    }
+			$table->timestamps();
+		});
+	}
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('table_donasi');
-    }
+	/**
+	 * Reverse the migrations.
+	 *
+	 * @return void
+	 */
+	public function down()
+	{
+		Schema::dropIfExists('table_donasi');
+	}
 }

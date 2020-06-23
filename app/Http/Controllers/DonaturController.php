@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Donasi;
 use App\Donatur;
+use App\Komunitas;
+use App\Relawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DonaturController extends Controller
 {
@@ -20,6 +23,27 @@ class DonaturController extends Controller
 		$donasi = Donasi::where('donatur_id', $donatur->id)->get();
 		return response()->json([
 			'donasi' => $donasi
+		]);
+	}
+
+	public function closestRelawan($latitude, $longitude)
+	{
+		$sqlDistance = DB::raw('( 6371 * acos( cos( radians(' . $latitude . ') ) 
+            * cos( radians( latitude ) ) 
+            * cos( radians( longitude ) 
+            - radians(' . $longitude  . ') ) 
+            + sin( radians(' . $latitude  . ') ) 
+            * sin( radians( latitude ) ) ) )');
+		//return $sqlDistance;
+
+		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+		$relawan =  Relawan::select('*')->selectRaw("{$sqlDistance} AS distance")
+			->where('komunitas_id', $kom)
+			->orderBy('distance')
+			->get(); //get users
+
+		return response()->json([
+			'relawan' => $relawan
 		]);
 	}
 
