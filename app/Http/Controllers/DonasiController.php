@@ -318,7 +318,17 @@ class DonasiController extends Controller
 			->get();
 
 		return response()->json([
-			'history' => $dns
+			'history' => $dns,
+		]);
+	}
+
+	public function allDonasi()
+	{
+		$donasi = Donasi::all();
+		$jmlDonasi = count($donasi);
+
+		return response()->json([
+			'jumlah_donasi' => $jmlDonasi
 		]);
 	}
 	/**

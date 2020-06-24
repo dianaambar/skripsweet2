@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
 			$table->string('alamat');
 			$table->string('no_telp');
 			$table->timestamp('email_verified_at')->nullable();
-			//$table->string('role');
+			$table->boolean('status')->default(false);
 			$table->rememberToken();
 			$table->timestamps();
 		});

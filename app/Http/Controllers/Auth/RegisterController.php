@@ -33,7 +33,7 @@ class RegisterController extends Controller
 	{
 		$credentials = validator($request->only('name', 'email', 'password', 'no_telp', 'alamat'), [
 			'name' => 'required|string',
-			'email' => 'required|string|min:6|max:50|unique:users',
+			'email' => 'required|string|min:5|max:50|unique:users',
 			'password' => 'required|string',
 			'no_telp'  => 'required|string',
 			'alamat' => 'required|string',
@@ -43,13 +43,21 @@ class RegisterController extends Controller
 			return response()->json($credentials->errors()->all(), 401);
 		}
 
-		$user = User::create([
-			'name' => $request->get('name'),
-			'email' => $request->get('email'),
-			'password' => Hash::make($request->get('password')),
-			'no_telp' => $request->get('no_telp'),
-			'alamat' => $request->get('alamat')
-		]);
+		//$user = User::create([
+		//	'name' => $request->get('name'),
+		//	'email' => $request->get('email'),
+		//	'password' => Hash::make($request->get('password')),
+		//	'no_telp' => $request->get('no_telp'),
+		//	'alamat' => $request->get('alamat')
+		//]);
+
+		$user = new User();
+		$user->name = $request->get('name');
+		$user->email = $request->get('email');
+		$user->password = Hash::make($request->get('password'));
+		$user->no_telp = $request->get('no_telp');
+		$user->alamat = $request->get('alamat');
+		$user->status = true;
 		$user->save();
 
 		$role = new RoleUser();
@@ -94,7 +102,6 @@ class RegisterController extends Controller
 		//]);
 		$user->save();
 
-
 		$komunitas = new Komunitas;
 		$komunitas->legalitas = $request->get('legalitas');
 		$komunitas->tgl_berdiri = $request->get('tgl_berdiri');
@@ -115,9 +122,6 @@ class RegisterController extends Controller
 			//$komunitas->foto_komunitas = $image;
 		}
 		//$komunitas->foto_komunitas = $request->get('foto_komunitas');
-		$komunitas->status = false;
-
-
 
 		$komunitas->user_id = $user->id;
 

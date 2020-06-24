@@ -26,6 +26,16 @@ class DonaturController extends Controller
 		]);
 	}
 
+	public function allDonatur()
+	{
+		$donatur = Donatur::all();
+		$jmlDonatur = count($donatur);
+
+		return response()->json([
+			'jumlah_donatur' => $jmlDonatur
+		]);
+	}
+
 	public function closestRelawan($latitude, $longitude)
 	{
 		$sqlDistance = DB::raw('( 6371 * acos( cos( radians(' . $latitude . ') ) 
