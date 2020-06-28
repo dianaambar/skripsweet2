@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Donasi;
 use App\Donatur;
 use App\Komunitas;
+use App\Makanan;
 use App\MakananDonasi;
 use App\PenerimaDonasi;
 use App\User;
@@ -329,6 +330,15 @@ class DonasiController extends Controller
 
 		return response()->json([
 			'jumlah_donasi' => $jmlDonasi
+		]);
+	}
+
+	public function showMakanan()
+	{
+		$makanan = Makanan::all();
+
+		return response()->json([
+			'makanan' => $makanan
 		]);
 	}
 	/**

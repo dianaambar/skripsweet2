@@ -22,8 +22,8 @@ class CreateTableDonasi extends Migration
 			$table->string('alamat_penjemputan');
 			$table->dateTime('waktu_penjemputan');
 			$table->string('status');
-			$table->string('latitude');
-			$table->string('longitude');
+			$table->decimal('latitude');
+			$table->decimal('longitude');
 			$table->text('notes')->nullable();
 			$table->text('foto')->nullable();
 			$table->boolean('accDonasi')->default(false);

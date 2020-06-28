@@ -32,8 +32,8 @@ class CreateTableRelawan extends Migration
 			$table->string('jenis_sim');
 			$table->text('foto_relawan');
 			$table->string('motivasi');
-			$table->string('latitude')->nullable();
-			$table->string('longitude')->nullable();
+			$table->decimal('latitude')->nullable();
+			$table->decimal('longitude')->nullable();
 			$table->timestamps();
 		});
 	}

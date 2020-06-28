@@ -9,6 +9,7 @@ use App\RoleUser;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class KomunitasController extends Controller
 {
@@ -118,6 +119,44 @@ class KomunitasController extends Controller
 		]);
 	}
 
+	public function closestRelawan($latitude, $longitude)
+	{
+		//$sqlDistance = DB::raw('( 6371 * acos( cos( radians(' . $latitude . ') ) 
+		//    * cos( radians( latitude ) ) 
+		//    * cos( radians( longitude ) 
+		//    - radians(' . $longitude  . ') ) 
+		//    + sin( radians(' . $latitude  . ') ) 
+		//    * sin( radians( latitude ) ) ) )');
+		//return $sqlDistance;
+
+		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+		//$relawan =  Relawan::select('*')->selectRaw("{$sqlDistance} AS distance")
+		//	->where('komunitas_id', $kom)
+		//	->orderBy('distance')
+		//	->get(); //get users
+		//$kom = DB::table('table_komunitas')
+		//	->where('user_id', Auth::user()->id)->first();
+
+		$relawan = DB::select(
+			'select * from
+			(select id, user_id, nama_panggilan, komunitas_id, ( 6371 * acos( cos( radians(' . $latitude . ') ) 
+						* cos( radians( latitude ) ) 
+						* cos( radians( longitude ) 
+						- radians(' . $longitude . ') ) 
+						+ sin( radians(' . $latitude . ') ) 
+						* sin( radians( latitude ) ) ) ) 
+						AS distance
+						from table_relawan) As tr
+						Inner join users 
+						on users.id = tr.user_id
+						where tr.komunitas_id = ' . $kom->id . '		
+						order by distance'
+		);
+
+		return response()->json([
+			'relawan' => $relawan
+		]);
+	}
 	/**
 	 * Store a newly created resource in storage.
 	 *

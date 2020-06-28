@@ -40,14 +40,15 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/datakomunitas', 'KomunitasController@dataKomunitas');
 	Route::post('/acceptrelawan/{id}', 'KomunitasController@accRelawan');
 	Route::get('/nonacckomunitas', 'KomunitasController@nonAccKomunitas');
+	Route::get('/closestrelawan/{latitude}/{longitude}', 'KomunitasController@closestRelawan');
 
-	Route::get('/closestrelawan/{latitude}/{longitude}', 'DonaturController@closestRelawan');
 	Route::get('/donatur', 'DonaturController@allDonatur');
 
 	Route::post('/acckomunitas', 'AdminController@accKomunitas');
 
 	Route::get('/nonaccrelawan', 'RelawanController@index');
 	Route::get('/relawan', 'RelawanController@allRelawan');
+	Route::get('/donasirelawan', 'RelawanController@donasiRelawan');
 });
 
 //Route::post('createdonasi', 'DonasiController@createDonasi');

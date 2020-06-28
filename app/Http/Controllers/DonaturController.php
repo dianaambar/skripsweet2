@@ -36,27 +36,6 @@ class DonaturController extends Controller
 		]);
 	}
 
-	public function closestRelawan($latitude, $longitude)
-	{
-		$sqlDistance = DB::raw('( 6371 * acos( cos( radians(' . $latitude . ') ) 
-            * cos( radians( latitude ) ) 
-            * cos( radians( longitude ) 
-            - radians(' . $longitude  . ') ) 
-            + sin( radians(' . $latitude  . ') ) 
-            * sin( radians( latitude ) ) ) )');
-		//return $sqlDistance;
-
-		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
-		$relawan =  Relawan::select('*')->selectRaw("{$sqlDistance} AS distance")
-			->where('komunitas_id', $kom)
-			->orderBy('distance')
-			->get(); //get users
-
-		return response()->json([
-			'relawan' => $relawan
-		]);
-	}
-
 	/**
 	 * Show the form for creating a new resource.
 	 *
