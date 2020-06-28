@@ -23,10 +23,17 @@ class KomunitasController extends Controller
 		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
 		$relawan = Relawan::join('users', 'users.id', 'table_relawan.user_id')
 			->select('table_relawan.*', 'users.name', 'users.alamat', 'users.no_telp')
-			->where('komunitas_id', $kom->id)->get();
+			->where('komunitas_id', $kom->id)
+			->where('status', true)->get();
+
+		$semua = Relawan::join('users', 'users.id', 'table_relawan.user_id')
+			->select('table_relawan.*', 'users.name', 'users.alamat', 'users.no_telp')
+			->where('komunitas_id', $kom->id)
+			->get();
 
 		return response()->json([
-			'relawan' => $relawan
+			'relawan' => $relawan,
+			'semua' => $semua
 		]);
 	}
 
@@ -129,7 +136,6 @@ class KomunitasController extends Controller
 		//    * sin( radians( latitude ) ) ) )');
 		//return $sqlDistance;
 
-		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
 		//$relawan =  Relawan::select('*')->selectRaw("{$sqlDistance} AS distance")
 		//	->where('komunitas_id', $kom)
 		//	->orderBy('distance')
@@ -137,9 +143,10 @@ class KomunitasController extends Controller
 		//$kom = DB::table('table_komunitas')
 		//	->where('user_id', Auth::user()->id)->first();
 
+		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
 		$relawan = DB::select(
 			'select * from
-			(select id, user_id, nama_panggilan, komunitas_id, ( 6371 * acos( cos( radians(' . $latitude . ') ) 
+			(select id, user_id, nama_panggilan, jenis_kelamin, komunitas_id, ( 6371 * acos( cos( radians(' . $latitude . ') ) 
 						* cos( radians( latitude ) ) 
 						* cos( radians( longitude ) 
 						- radians(' . $longitude . ') ) 

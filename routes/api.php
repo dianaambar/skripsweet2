@@ -44,7 +44,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 	Route::get('/donatur', 'DonaturController@allDonatur');
 
-	Route::post('/acckomunitas', 'AdminController@accKomunitas');
+	Route::post('/acckomunitas/{id}', 'AdminController@accKomunitas');
 
 	Route::get('/nonaccrelawan', 'RelawanController@index');
 	Route::get('/relawan', 'RelawanController@allRelawan');
