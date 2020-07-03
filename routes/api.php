@@ -22,6 +22,8 @@ Route::post('/regisrelawan', 'Auth\RegisterController@registRelawan');
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/getuser', 'UserController@user');
+	Route::post('logout', 'UserController@logoutApi');
+
 	Route::get('/donasikomunitas', 'DonasiController@index');
 	Route::get('/donasikomunitas/{id}', 'DonasiController@showDetail');
 	Route::get('/listdonasi', 'DonasiController@listDonasi');
@@ -30,17 +32,19 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('/createdonasi', 'DonasiController@createDonasi');
 	Route::post('/selectrelawan/{id}', 'DonasiController@findRelawan');
 	Route::post('/accrelawan/{id}', 'DonasiController@accRelawan');
+	//Route::post('/accrelawan', 'DonasiController@accRelawan');
+
 	Route::post('/updatepenerima/{id}', 'DonasiController@updatePenerimaDonasi');
 	Route::get('/donasiselesai', 'DonasiController@donasiSelesai');
 	Route::get('/donasi', 'DonasiController@allDonasi');
 
 	Route::get('/history', 'KomunitasController@allTransactions');
 	Route::get('/relawankomunitas', 'KomunitasController@getRelawan');
-	Route::get('/komunitas', 'KomunitasController@showKomunitas');
 	Route::get('/datakomunitas', 'KomunitasController@dataKomunitas');
 	Route::post('/acceptrelawan/{id}', 'KomunitasController@accRelawan');
 	Route::get('/nonacckomunitas', 'KomunitasController@nonAccKomunitas');
 	Route::get('/closestrelawan/{latitude}/{longitude}', 'KomunitasController@closestRelawan');
+	Route::get('/jumlahdata', 'KomunitasController@jmlTransaksi');
 
 	Route::get('/donatur', 'DonaturController@allDonatur');
 
@@ -49,8 +53,12 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/nonaccrelawan', 'RelawanController@index');
 	Route::get('/relawan', 'RelawanController@allRelawan');
 	Route::get('/donasirelawan', 'RelawanController@donasiRelawan');
+	Route::post('/locrelawan/{id}', 'RelawanController@updateLatLong');
+	Route::get('/accbyrelawan', 'RelawanController@acceptByRelawan');
 });
 
+Route::get('/detailrelawan/{id}', 'RelawanController@showDataRelawan');
+Route::get('/komunitas', 'KomunitasController@showKomunitas');
 //Route::post('createdonasi', 'DonasiController@createDonasi');
 //Route::post('updaterelawan/{id}', 'DonasiController@findRelawan');
 //Route::post('accrelawan/{id}', 'DonasiController@accRelawan');

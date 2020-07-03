@@ -42,4 +42,9 @@ class User extends Authenticatable
 	{
 		return $this->hasMany('App\RoleUser', 'user_id');
 	}
+
+	public function AauthAcessToken()
+	{
+		return $this->hasMany('\App\OauthAccessToken');
+	}
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Donasi;
 use App\Komunitas;
+use App\PenerimaDonasi;
 use App\Relawan;
 use App\RoleUser;
 use App\User;
@@ -89,11 +90,17 @@ class KomunitasController extends Controller
 			->where('status', true)
 			->get();
 
+		$komunitass = Komunitas::join('users', 'users.id', 'table_komunitas.user_id')
+			->where('status', true)
+			->select('users.name')
+			->first();
+
 		$jmlKom = count($komunitas);
 
 		return response()->json([
 			'komunitas' => $komunitas,
-			'jumlah_komunitas' => $jmlKom
+			'jumlah_komunitas' => $jmlKom,
+			'namakomunitas' => $komunitass
 		]);
 	}
 
@@ -143,20 +150,18 @@ class KomunitasController extends Controller
 		//$kom = DB::table('table_komunitas')
 		//	->where('user_id', Auth::user()->id)->first();
 
-		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+		//$kom = Komunitas::where('user_id', Auth::user()->id)->first();
 		$relawan = DB::select(
-			'select * from
-			(select id, user_id, nama_panggilan, jenis_kelamin, komunitas_id, ( 6371 * acos( cos( radians(' . $latitude . ') ) 
+			'select u.name, u. alamat, u.no_telp, tr.id, tr.user_id, tr.nama_panggilan, tr.jenis_kelamin, tr.komunitas_id, ( 6371 * acos( cos( radians(' . $latitude . ') ) 
 						* cos( radians( latitude ) ) 
 						* cos( radians( longitude ) 
 						- radians(' . $longitude . ') ) 
 						+ sin( radians(' . $latitude . ') ) 
 						* sin( radians( latitude ) ) ) ) 
 						AS distance
-						from table_relawan) As tr
-						Inner join users 
-						on users.id = tr.user_id
-						where tr.komunitas_id = ' . $kom->id . '		
+						from table_relawan As tr
+						inner join users as u
+						on u.id = tr.user_id and u.status = true
 						order by distance'
 		);
 
@@ -164,7 +169,33 @@ class KomunitasController extends Controller
 			'relawan' => $relawan
 		]);
 	}
+
+	public function jmlTransaksi()
+	{
+		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+
+		$donasi = Donasi::where('komunitas_id', $kom->id)
+			->where('status', 'Donasi telah disalurkan')->get();
+		$jmlDonasi = count($donasi);
+
+		$relawan = Relawan::join('users', 'users.id', 'table_relawan.user_id')
+			->where('komunitas_id', $kom->id)
+			->where('users.status',  true)->get();
+		$jmlRelawan = count($relawan);
+
+		$penerima = PenerimaDonasi::join('table_donasi', 'table_donasi.penerima_id', 'table_penerima_donasi.id')
+			->where('table_donasi.komunitas_id', $kom->id)
+			->get();
+		$jmlPenerima = count($penerima);
+
+		return response()->json([
+			'jmlDonasi' => $jmlDonasi,
+			'jmlRelawan' => $jmlRelawan,
+			'jmlPenerima' => $jmlPenerima
+		]);
+	}
 	/**
+	 * 
 	 * Store a newly created resource in storage.
 	 *
 	 * @param  \Illuminate\Http\Request  $request

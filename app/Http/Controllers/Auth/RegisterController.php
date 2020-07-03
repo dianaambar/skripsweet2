@@ -110,10 +110,10 @@ class RegisterController extends Controller
 			//$imagePath = storage_path() . '/app/public/';
 			$image = $request->file('foto_komunitas');
 			$imageName = str_random(8) . '.' . $image->getClientOriginalExtension();
-			$image->move('images', $imageName);
+			$image->move('images/', $imageName);
 			$imagePath = 'http://localhost:8000/images' . '/' . $imageName;
 
-			$komunitas->foto_komunitas = $imagePath;
+			$komunitas->foto_komunitas = $imageName;
 			//Image::make($image)->save($imagePath . $imageName);
 
 
@@ -263,7 +263,14 @@ class RegisterController extends Controller
 		$relawan->organisasi_ongoing = $request->get('organisasi_ongoing');
 		$relawan->jenis_sim = $request->get('jenis_sim');
 		$relawan->motivasi = $request->get('motivasi');
-		$relawan->foto_relawan = $request->get('foto_relawan');
+		//$relawan->foto_relawan = $request->get('foto_relawan');
+		if ($request->hasFile('foto_relawan')) {
+			$image = $request->file('foto_relawan');
+			$imageName = "relawan_" . str_random(5) . '.' . $image->getClientOriginalExtension();
+			$image->move('images/', $imageName);
+
+			$relawan->foto_relawan = $imageName;
+		}
 		$relawan->latitude = $request->get('latitude');
 		$relawan->longitude = $request->get('longitude');
 		$relawan->user_id = $user->id;

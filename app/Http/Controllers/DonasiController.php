@@ -51,7 +51,7 @@ class DonasiController extends Controller
 
 	public function showDetail($id)
 	{
-		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+		//$kom = Komunitas::where('user_id', Auth::user()->id)->first();
 		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan', 'relawan.user', 'penerimaDonasi')
 			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
 			//->join('table_relawan', 'table_relawan.id', 'table_donasi.relawan_id')
@@ -59,7 +59,7 @@ class DonasiController extends Controller
 			//->join('table_penerima_donasi', 'table_penerima_donasi.id', 'table_donasi.penerima_id')
 			//->join('users', 'users.id', 'table_relawan.user_id')
 			->select('table_donasi.*', 'users.name')
-			->where('komunitas_id', $kom->id)
+			//->where('komunitas_id', $kom->id)
 			->where('table_donasi.id', $id)
 			->first();
 
@@ -139,10 +139,10 @@ class DonasiController extends Controller
 		if ($request->hasFile('foto')) {
 			$image = $request->file('foto');
 			$imageName = 'donasi_' . str_random(5) . '.' . $image->getClientOriginalExtension();
-			$image->move('images', $imageName);
+			$image->move('images/', $imageName);
 			$imagePath = 'http://localhost:8000/images' . '/' . $imageName;
 
-			$donasi->foto = $imagePath;
+			$donasi->foto = $imageName;
 		}
 		$donasi->save();
 
@@ -234,6 +234,8 @@ class DonasiController extends Controller
 		//	return response()->json($accCreds->errors()->all(), 401);
 		//}
 
+		$dns = $request->get('id');
+
 		$donasi = Donasi::find($id);
 
 		if ($donasi) {
@@ -288,7 +290,7 @@ class DonasiController extends Controller
 			$image->move('images/', $imageName);
 			$imagePath = 'http://localhost:8000/images' . '/' . $imageName;
 
-			$penerimaDonasi->foto = $imagePath;
+			$penerimaDonasi->foto = $imageName;
 		}
 		$penerimaDonasi->latitude = $request->get('latitude');
 		$penerimaDonasi->longitude = $request->get('longitude');
@@ -325,7 +327,7 @@ class DonasiController extends Controller
 
 	public function allDonasi()
 	{
-		$donasi = Donasi::all();
+		$donasi = Donasi::where('status', 'Donasi telah disalurkan')->get();
 		$jmlDonasi = count($donasi);
 
 		return response()->json([

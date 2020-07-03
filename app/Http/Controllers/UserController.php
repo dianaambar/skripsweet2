@@ -25,4 +25,11 @@ class UserController extends Controller
 			'user' => $user
 		]);
 	}
+
+	public function logoutApi()
+	{
+		if (Auth::check()) {
+			Auth::user()->AauthAcessToken()->delete();
+		}
+	}
 }
