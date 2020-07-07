@@ -30,6 +30,12 @@ class DonasiController extends Controller
 			->where('komunitas_id', $kom->id)
 			->get();
 
+		return response()->json([
+			'donasi' => $dns
+		]);
+
+		//$komunitas = User::find(Auth::user()->id)->name;
+
 		//$dns = Donasi::with('makananDonasi')->where('komunitas_id', $kom->id)->get();
 		//for($i = 0;$i<count($dns);$i++){
 		//	for($j = 0;$j<count($dns[$i]['makanan_donasi']);$j++){
@@ -37,12 +43,6 @@ class DonasiController extends Controller
 		//		$dns[$i]['makanan_donasi'][$j]['jenis_makanan'] = $$dns[$i]['makanan_donasi'][$j]->makanan->jenis_makanan->nama_jenis;
 		//	}
 		//}
-
-		//$komunitas = User::find(Auth::user()->id)->name;
-		return response()->json([
-			'donasi' => $dns
-		]);
-
 		//$listdonasi = Donasi::select()
 
 		//return Auth::user();
@@ -51,21 +51,27 @@ class DonasiController extends Controller
 
 	public function showDetail($id)
 	{
-		//$kom = Komunitas::where('user_id', Auth::user()->id)->first();
 		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan', 'relawan.user', 'penerimaDonasi')
 			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
-			//->join('table_relawan', 'table_relawan.id', 'table_donasi.relawan_id')
 			->join('users', 'users.id', 'table_donatur.user_id')
-			//->join('table_penerima_donasi', 'table_penerima_donasi.id', 'table_donasi.penerima_id')
-			//->join('users', 'users.id', 'table_relawan.user_id')
 			->select('table_donasi.*', 'users.name')
-			//->where('komunitas_id', $kom->id)
 			->where('table_donasi.id', $id)
 			->first();
 
 		return response()->json([
 			'donasi' => $dns
 		]);
+
+		//$dns = Donasi::with('makananDonasi.makanan.jenisMakanan', 'relawan.user', 'penerimaDonasi')
+		//	->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+		//	//->join('table_relawan', 'table_relawan.id', 'table_donasi.relawan_id')
+		//	->join('users', 'users.id', 'table_donatur.user_id')
+		//	//->join('table_penerima_donasi', 'table_penerima_donasi.id', 'table_donasi.penerima_id')
+		//	//->join('users', 'users.id', 'table_relawan.user_id')
+		//	->select('table_donasi.*', 'users.name')
+		//	//->where('komunitas_id', $kom->id)
+		//	->where('table_donasi.id', $id)
+		//	->first();
 	}
 
 	public function listDonasi()
@@ -129,7 +135,7 @@ class DonasiController extends Controller
 
 		$donasi = new Donasi;
 		$donasi->komunitas_id = $request->komunitas_id;
-		$donasi->donatur_id = $request->donatur_id;
+		$donasi->donatur_id = Auth::user()->id;
 		$donasi->alamat_penjemputan = $request->get('alamat_penjemputan');
 		$donasi->waktu_penjemputan = $request->get('waktu_penjemputan');
 		$donasi->latitude = $request->get('latitude');
@@ -226,15 +232,7 @@ class DonasiController extends Controller
 	 */
 	public function accRelawan(Request $request, $id)
 	{
-		//$accCreds = validator($request->only('accDonasi'), [
-		//	'accDonasi' => 'required'
-		//]);
 
-		//if ($accCreds->fails()) {
-		//	return response()->json($accCreds->errors()->all(), 401);
-		//}
-
-		$dns = $request->get('id');
 
 		$donasi = Donasi::find($id);
 
@@ -244,11 +242,9 @@ class DonasiController extends Controller
 
 			if ($acc == 'true') {
 				$donasi->status = "Makanan akan dijemput oleh Relawan";
-				//$donasi->save();
 			} else {
 				$donasi->status = "Donasi diterima, Mencari Relawan";
 				$donasi->relawan_id = null;
-				//$donasi->save();
 			}
 		}
 		$donasi->save();
@@ -257,6 +253,16 @@ class DonasiController extends Controller
 			'message' => 'Donasi berhasil di update',
 			'updatedonasi' => $donasi
 		]);
+
+		//$accCreds = validator($request->only('accDonasi'), [
+		//	'accDonasi' => 'required'
+		//]);
+
+		//if ($accCreds->fails()) {
+		//	return response()->json($accCreds->errors()->all(), 401);
+		//}
+
+		//$dns = $request->get('id');
 	}
 
 
@@ -266,7 +272,52 @@ class DonasiController extends Controller
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function updatePenerimaDonasi(Request $request, $id)
+	public function updatePenerimaDonasi(Request $request)
+	{
+		$credspenerima = validator($request->only('nama_penerima', 'alamat_penerima', 'foto', 'latitude', 'longitude'), [
+			'nama_penerima' => 'required|string',
+			'alamat_penerima' => 'required|string',
+			'foto' => 'required',
+			'latitude' => 'required',
+			'longitude' => 'required'
+		]);
+
+		if ($credspenerima->fails()) {
+			return response()->json($credspenerima->errors()->all());
+		}
+
+		$penerimaDonasi = new PenerimaDonasi;
+		//$penerimaDonasi->id = $request->id;
+		$penerimaDonasi->nama_penerima = $request->get('nama_penerima');
+		$penerimaDonasi->alamat_penerima = $request->get('alamat_penerima');
+		//$penerimaDonasi->foto = $request->get('foto');
+		if ($request->hasFile('foto')) {
+			$image = $request->file('foto');
+			$imageName = 'penerima_' . str_random(5) . '.' . $image->getClientOriginalExtension();
+			$image->move('images/', $imageName);
+			$imagePath = 'http://localhost:8000/images' . '/' . $imageName;
+
+			$penerimaDonasi->foto = $imageName;
+		}
+		$penerimaDonasi->latitude = $request->get('latitude');
+		$penerimaDonasi->longitude = $request->get('longitude');
+		$penerimaDonasi->save();
+
+		$id = $request->id;
+		$donasi = Donasi::find($id);
+
+		if ($donasi) {
+			$donasi->penerima_id = $penerimaDonasi->id;
+			$donasi->status = "Donasi telah disalurkan";
+			$donasi->save();
+		}
+
+		return response()->json([
+			'updatedonasi' => $donasi
+		]);
+	}
+
+	public function updatePenerimaDonasiNonRelawan(Request $request, $id)
 	{
 		$credspenerima = validator($request->only('nama_penerima', 'alamat_penerima', 'foto', 'latitude', 'longitude'), [
 			'nama_penerima' => 'required|string',
@@ -277,10 +328,11 @@ class DonasiController extends Controller
 		]);
 
 		if ($credspenerima->fails()) {
-			return response()->json($credspenerima->errors()->all(), 401);
+			return response()->json($credspenerima->errors()->all());
 		}
 
 		$penerimaDonasi = new PenerimaDonasi;
+		//$penerimaDonasi->id = $request->id;
 		$penerimaDonasi->nama_penerima = $request->get('nama_penerima');
 		$penerimaDonasi->alamat_penerima = $request->get('alamat_penerima');
 		//$penerimaDonasi->foto = $request->get('foto');

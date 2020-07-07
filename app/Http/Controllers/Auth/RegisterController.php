@@ -228,7 +228,7 @@ class RegisterController extends Controller
 			'organisasi_ongoing' => 'required',
 			'jenis_sim' => 'required',
 			'motivasi' => 'required',
-			'foto_relawan' => 'required|string',
+			'foto_relawan' => 'required',
 			'latitude',
 			'longitude'
 		]);
@@ -249,7 +249,6 @@ class RegisterController extends Controller
 
 		$relawan = new Relawan;
 		$relawan->komunitas_id = $request->komunitas_id;
-		//$relawan->jenis_kendaraan = $request->get('jenis_kendaraan');
 		$relawan->nama_panggilan = $request->get('nama_panggilan');
 		$relawan->jenis_kelamin = $request->get('jenis_kelamin');
 		$relawan->agama = $request->get('agama');
@@ -263,7 +262,6 @@ class RegisterController extends Controller
 		$relawan->organisasi_ongoing = $request->get('organisasi_ongoing');
 		$relawan->jenis_sim = $request->get('jenis_sim');
 		$relawan->motivasi = $request->get('motivasi');
-		//$relawan->foto_relawan = $request->get('foto_relawan');
 		if ($request->hasFile('foto_relawan')) {
 			$image = $request->file('foto_relawan');
 			$imageName = "relawan_" . str_random(5) . '.' . $image->getClientOriginalExtension();
@@ -284,6 +282,7 @@ class RegisterController extends Controller
 		$role->save();
 
 		return response()->json([
+			'success' => 'Relawan successfully created!',
 			'relawan' => $relawan
 		]);
 

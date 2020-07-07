@@ -14,9 +14,8 @@ class UserController extends Controller
 	public function user()
 	{
 		//$user = Auth::user();
-		$user = RoleUser::with('user')
-			->where('user_id', Auth::user()->id)
-			//->join('users', 'users.id', 'table_role_users.user_id')
+		$user = RoleUser::where('user_id', Auth::user()->id)
+			->join('users', 'users.id', 'table_role_users.user_id')
 			//->join('table_komunitas', 'table_komunitas.user_id', 'table_role_users.user_id')
 			->first();
 

@@ -63,6 +63,23 @@ class KomunitasController extends Controller
 		]);
 	}
 
+	public function ignoreRelawan($id)
+	{
+		$user = User::find($id);
+		$relawan = Relawan::join('users', 'users.id', 'table_relawan.id')
+			->where('table_relawan.user_id', $id)
+			->first();
+
+		if ($user) {
+			$user->delete();
+			$relawan->delete();
+		}
+
+		return response()->json([
+			'success' => 'user successfully deleted'
+		]);
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -135,6 +152,26 @@ class KomunitasController extends Controller
 
 	public function closestRelawan($latitude, $longitude)
 	{
+
+		$relawan = DB::select(
+			'select u.name, u. alamat, u.no_telp, tr.id, tr.user_id, tr.nama_panggilan, tr.jenis_kelamin, 
+						tr.komunitas_id, ( 6371 * acos( cos( radians(' . $latitude . ') ) 
+						* cos( radians( latitude ) ) 
+						* cos( radians( longitude ) 
+						- radians(' . $longitude . ') ) 
+						+ sin( radians(' . $latitude . ') ) 
+						* sin( radians( latitude ) ) ) ) 
+						AS distance
+						from table_relawan As tr
+						inner join users as u
+						on u.id = tr.user_id and u.status = true
+						order by distance'
+		);
+
+		return response()->json([
+			'relawan' => $relawan
+		]);
+
 		//$sqlDistance = DB::raw('( 6371 * acos( cos( radians(' . $latitude . ') ) 
 		//    * cos( radians( latitude ) ) 
 		//    * cos( radians( longitude ) 
@@ -151,23 +188,6 @@ class KomunitasController extends Controller
 		//	->where('user_id', Auth::user()->id)->first();
 
 		//$kom = Komunitas::where('user_id', Auth::user()->id)->first();
-		$relawan = DB::select(
-			'select u.name, u. alamat, u.no_telp, tr.id, tr.user_id, tr.nama_panggilan, tr.jenis_kelamin, tr.komunitas_id, ( 6371 * acos( cos( radians(' . $latitude . ') ) 
-						* cos( radians( latitude ) ) 
-						* cos( radians( longitude ) 
-						- radians(' . $longitude . ') ) 
-						+ sin( radians(' . $latitude . ') ) 
-						* sin( radians( latitude ) ) ) ) 
-						AS distance
-						from table_relawan As tr
-						inner join users as u
-						on u.id = tr.user_id and u.status = true
-						order by distance'
-		);
-
-		return response()->json([
-			'relawan' => $relawan
-		]);
 	}
 
 	public function jmlTransaksi()
@@ -192,6 +212,23 @@ class KomunitasController extends Controller
 			'jmlDonasi' => $jmlDonasi,
 			'jmlRelawan' => $jmlRelawan,
 			'jmlPenerima' => $jmlPenerima
+		]);
+	}
+
+	public function disableRelawan($id)
+	{
+
+		$relawan = User::find($id);
+		//$user = User::join('table_relawan', 'users.id', 'table_relawan.user_id')
+		//->where('users.id', )
+
+		if ($relawan) {
+			$relawan->status = false;
+			$relawan->save();
+		}
+
+		return response()->json([
+			'relawan' => $relawan
 		]);
 	}
 	/**
