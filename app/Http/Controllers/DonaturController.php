@@ -37,11 +37,11 @@ class DonaturController extends Controller
 	}
 
 	public function historyDonasi(){
-		$donasi = Donasi::with('relawan.user', 'komunitas.user', 'penerimaDonasi')
-		->join('table_komunitas', 'table_komunitas.id', 'table_donasi.komunitas_id')
-		->join('users', 'users.id', 'table_donasi.komunitas_id')
-		->select('table_donasi.*')
-		->get();
+		$donasi = Donasi::with('relawan.user', 'komunitas.user', 'penerimaDonasi')->get();
+		// ->join('table_komunitas', 'table_komunitas.id', 'table_donasi.komunitas_id')
+		// ->join('users', 'users.id', 'table_donasi.komunitas_id')
+		// ->select('table_donasi.*')
+		
 
 		return response()->json([
 			'donasi' => $donasi
