@@ -96,6 +96,7 @@ class DonasiController extends Controller
 	{
 		$donasicreds = validator($request->only(
 			'alamat_penjemputan',
+			'tgl_penjemputan',
 			'waktu_penjemputan',
 			'latitude',
 			'longitude',
@@ -113,6 +114,7 @@ class DonasiController extends Controller
 			'foto'
 		), [
 			'alamat_penjemputan' => 'required|string',
+			'tgl_penjemputan' => 'required',
 			'waktu_penjemputan' => 'required',
 			'latitude' => 'required',
 			'longitude' => 'required',
@@ -137,6 +139,7 @@ class DonasiController extends Controller
 		$donasi->komunitas_id = $request->komunitas_id;
 		$donasi->donatur_id = Auth::user()->id;
 		$donasi->alamat_penjemputan = $request->get('alamat_penjemputan');
+		$donasi->tgl_penjemputan = $request->get('tgl_penjemputan');
 		$donasi->waktu_penjemputan = $request->get('waktu_penjemputan');
 		$donasi->latitude = $request->get('latitude');
 		$donasi->longitude = $request->get('longitude');
