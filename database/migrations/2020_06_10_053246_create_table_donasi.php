@@ -20,7 +20,8 @@ class CreateTableDonasi extends Migration
 			$table->integer('relawan_id')->nullable();
 			$table->integer('penerima_id')->nullable();
 			$table->string('alamat_penjemputan');
-			$table->dateTime('waktu_penjemputan');
+			$table->dateTime('tgl_penjemputan');
+			$table->time('waktu_penjemputan');
 			$table->string('status');
 			$table->decimal('latitude');
 			$table->decimal('longitude');
