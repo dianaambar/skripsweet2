@@ -74,7 +74,7 @@ class RegisterController extends Controller
 	{
 		$credentials = validator($request->only('name', 'email', 'password', 'no_telp', 'alamat', 'legalitas', 'tgl_berdiri', 'foto_komunitas', 'status'), [
 			'name' => 'required|string',
-			'email' => 'required|string|min:6|max:50|unique:users',
+			'email' => 'required|string|min:6|max:50',
 			'password' => 'required|string',
 			'no_telp'  => 'required|string',
 			'alamat' => 'required|string',
@@ -211,7 +211,7 @@ class RegisterController extends Controller
 			'motivasi'
 		), [
 			'name' => 'required|string',
-			'email' => 'required|string|min:6|max:50|unique:users',
+			'email' => 'required|string|min:6|max:50',
 			'password' => 'required|string',
 			'no_telp'  => 'required|string',
 			'alamat' => 'required|string',
