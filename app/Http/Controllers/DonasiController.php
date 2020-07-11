@@ -415,9 +415,11 @@ class DonasiController extends Controller
 	{
 		$donasi = Donasi::where('status', 'Donasi telah disalurkan')->get();
 		$jmlDonasi = count($donasi);
+		$alldonasi = Donasi::all();
 
 		return response()->json([
-			'jumlah_donasi' => $jmlDonasi
+			'jumlah_donasi' => $jmlDonasi,
+			'all_donasi' => $alldonasi
 		]);
 	}
 

@@ -21,6 +21,7 @@ Route::post('/regisdonatur', 'Auth\RegisterController@registDonatur');
 Route::post('/regisrelawan', 'Auth\RegisterController@registRelawan');
 
 Route::get('/getmakanan', 'DonasiController@showMakanan');
+Route::get('/acceptedkomunitas', 'KomunitasController@acceptedKomunitas');
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/getuser', 'UserController@user');
@@ -53,7 +54,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/jumlahdata', 'KomunitasController@jmlTransaksi');
 	Route::post('/disablerelawan/{id}', 'KomunitasController@disableRelawan');
 	Route::post('/ignorerelawan/{id}', 'KomunitasController@ignoreRelawan');
-	Route::get('/acceptedkomunitas', 'KomunitasController@acceptedKomunitas');
 
 	Route::get('/donatur', 'DonaturController@allDonatur');
 	Route::get('/donasidonatur', 'DonaturController@index');

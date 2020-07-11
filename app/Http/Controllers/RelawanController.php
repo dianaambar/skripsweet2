@@ -75,6 +75,7 @@ class RelawanController extends Controller
 			->select('table_donasi.*', 'users.name')
 			->where('relawan_id', $relawan->id)
 			->where('accDonasi', true)
+			->where('table_donasi.status', "Makanan akan dijemput oleh Relawan")
 			->get();
 
 		return response()->json([
