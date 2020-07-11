@@ -31,7 +31,8 @@ class DonasiController extends Controller
 			->get();
 
 		return response()->json([
-			'donasi' => $dns
+			'donasi' => $dns,
+			'kom' => $kom
 		]);
 
 		//$komunitas = User::find(Auth::user()->id)->name;
@@ -47,6 +48,22 @@ class DonasiController extends Controller
 
 		//return Auth::user();
 		//return $kom;
+	}
+
+	public function donasiMenunggu()
+	{
+		$kom = Komunitas::where('user_id', Auth::user()->id)->first();
+		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan', 'relawan.user')
+			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+			->join('users', 'users.id', 'table_donatur.user_id')
+			->select('table_donasi.*', 'users.name')
+			->where('komunitas_id', $kom->id)
+			->where('table_donasi.status', "Donasi diterima, Mencari Relawan")
+			->get();
+
+		return response()->json([
+			'donasi' => $dns
+		]);
 	}
 
 	public function showDetail($id)
@@ -135,9 +152,10 @@ class DonasiController extends Controller
 			return response()->json($donasicreds->errors()->all(), 401);
 		}
 
+		$donatur = Donatur::where('user_id', Auth::user()->id)->first();
 		$donasi = new Donasi;
 		$donasi->komunitas_id = $request->komunitas_id;
-		$donasi->donatur_id = Auth::user()->id;
+		$donasi->donatur_id = $donatur->id;
 		$donasi->alamat_penjemputan = $request->get('alamat_penjemputan');
 		$donasi->tgl_penjemputan = $request->get('tgl_penjemputan');
 		$donasi->waktu_penjemputan = $request->get('waktu_penjemputan');
@@ -194,6 +212,19 @@ class DonasiController extends Controller
 
 		return response()->json([
 			'updatedonasi' => $donasi
+		]);
+	}
+
+	public function ignoreDonasi($id)
+	{
+		$donasi = Donasi::find($id);
+
+		if ($donasi) {
+			$donasi->delete();
+		}
+
+		return response()->json([
+			'success' => "Donasi successsfully deleted!"
 		]);
 	}
 

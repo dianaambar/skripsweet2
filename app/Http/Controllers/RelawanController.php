@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Donasi;
 use App\Komunitas;
 use App\Relawan;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\CssSelector\Node\SelectorNode;
 
 class RelawanController extends Controller
 {
@@ -80,10 +82,22 @@ class RelawanController extends Controller
 		]);
 	}
 
-	public function updateLatLong(Request $request, $id)
+	public function relawanInfo()
 	{
+		$relawan = Relawan::where('user_id', Auth::user()->id)
+			->join('users', 'users.id', 'table_relawan.user_id')
+			->select('table_relawan.*', 'users.name', 'users.email', 'users.no_telp', 'users.status', 'users.alamat')
+			->first();
 
-		$relawan = Relawan::find($id);
+		return response()->json([
+			'relawan' => $relawan
+		]);
+	}
+
+	public function updateLatLong(Request $request)
+	{
+		$id = Auth::user()->id;
+		$relawan = Relawan::where('user_id', $id)->first();
 
 		if ($relawan) {
 			$relawan->latitude = $request->get('latitude');
@@ -92,7 +106,6 @@ class RelawanController extends Controller
 		$relawan->save();
 
 		return response()->json([
-			'message' => 'Location updated',
 			'relawan' => $relawan
 		]);
 	}
