@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('/accrelawan/{id}', 'DonasiController@accRelawan');
 	Route::post('/updatepenerima', 'DonasiController@updatePenerimaDonasi');
 	//Route::post('/accrelawan', 'DonasiController@accRelawan');
+	Route::post('/updatepenerima', 'DonasiController@updatePenerimaDonasi');
 	Route::get('/donasiselesai', 'DonasiController@donasiSelesai');
 	Route::get('/donasi', 'DonasiController@allDonasi');
 	Route::post('/updatenonrelawan/{id}', 'DonasiController@updatePenerimaDonasiNonRelawan');
@@ -67,8 +68,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/accbyrelawan', 'RelawanController@acceptByRelawan');
 	Route::get('/detailrelawan/{id}', 'RelawanController@showDataRelawan');
 	Route::get('/inforelawan', 'RelawanController@relawanInfo');
-});
 
+	Route::get('/penerimadonasi', 'PenerimaDonasiController@showPenerima');
+	Route::post('/closestpenerima', 'PenerimaDonasiController@closestPenerimaDonasi');
+});
 
 // Route::get('/komunitas', 'KomunitasController@showKomunitas');
 
