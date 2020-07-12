@@ -38,6 +38,24 @@ class KomunitasController extends Controller
 		]);
 	}
 
+	public function acceptedKomunitas()
+	{
+		$komunitas = DB::table('table_komunitas')
+			->join('users', 'users.id', 'table_komunitas.user_id')
+			->select('users.name', 'table_komunitas.id')
+			->where('users.status', true)
+			->get();
+		//->pluck('users.name');
+		//$komunitas = Komunitas::join('users', 'users.id', 'table_komunitas.user_id')
+		//	->select('users.name')
+		//	->where('users.status', true)
+		//	->list('users.name');
+
+		return response()->json([
+			'komunitas' => $komunitas
+		]);
+	}
+
 	public function accRelawan($id)
 	{
 		//$kom = Komunitas::where('user_id', Auth::user()->id)->first();
@@ -88,6 +106,7 @@ class KomunitasController extends Controller
 	public function nonAccKomunitas()
 	{
 		$komunitas = Komunitas::join('users', 'users.id', 'table_komunitas.user_id')
+			->select('users.name', 'users.no_telp', 'users.alamat', 'users.status', 'users.email', 'table_komunitas.*')
 			->where('status', false)
 			->get();
 

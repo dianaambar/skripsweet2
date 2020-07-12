@@ -25,6 +25,11 @@ class Donasi extends Model
 		return $this->belongsTo('App\Komunitas', 'komunitas_id');
 	}
 
+	//public function donatur()
+	//{
+	//	return $this->belongsTo('App\Donatur', 'donatur_id');
+	//}
+
 	public function penerimaDonasi()
 	{
 		return $this->belongsTo('App\PenerimaDonasi', 'penerima_id');
