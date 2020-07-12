@@ -36,6 +36,20 @@ class DonaturController extends Controller
 		]);
 	}
 
+	public function showAllDonatur()
+	{
+
+		$donatur = Donatur::join('users', 'users.id', 'table_donatur.user_id')
+		->select('users.name','users.email','users.no_telp', 'users.alamat', 'jenis_kelamin')
+		->get();
+
+		//ngitung jumlah donasi per user
+
+		return response()->json([
+			'donatur' => $donatur
+		]);
+	}
+
 	public function historyDonasi(){
 		$donasi = Donasi::with('relawan.user', 'komunitas.user', 'penerimaDonasi')->get();
 		// ->join('table_komunitas', 'table_komunitas.id', 'table_donasi.komunitas_id')

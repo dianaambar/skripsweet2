@@ -27,6 +27,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/getuser', 'UserController@user');
 	Route::post('logout', 'UserController@logoutApi');
 
+	Route::get('/showalldonasi', 'DonasiController@showAllDonasi');
 	Route::get('/donasikomunitas', 'DonasiController@index');
 	Route::get('/donasikomunitas/{id}', 'DonasiController@showDetail');
 	Route::get('/listdonasi', 'DonasiController@listDonasi');
@@ -40,6 +41,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('/updatepenerima', 'DonasiController@updatePenerimaDonasi');
 	Route::get('/donasiselesai', 'DonasiController@donasiSelesai');
 	Route::get('/donasi', 'DonasiController@allDonasi');
+
 	Route::post('/updatenonrelawan/{id}', 'DonasiController@updatePenerimaDonasiNonRelawan');
 	Route::get('/donasimenunggu', 'DonasiController@donasiMenunggu');
 	Route::post('/deleteDonasi/{id}', 'DonasiController@ignoreDonasi');
@@ -55,7 +57,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('/ignorerelawan/{id}', 'KomunitasController@ignoreRelawan');
 
 	Route::get('/donatur', 'DonaturController@allDonatur');
-	Route::get('/donasidonatur', 'DonaturController@index');
+	Route::get('/showalldonatur', 'DonaturController@showAllDonatur');
 
 	Route::post('/acckomunitas/{id}', 'AdminController@accKomunitas');
 
@@ -74,7 +76,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('/closestpenerima', 'PenerimaDonasiController@closestPenerimaDonasi');
 });
 
+
+
 // Route::get('/komunitas', 'KomunitasController@showKomunitas');
+
 
 //Route::post('createdonasi', 'DonasiController@createDonasi');
 //Route::post('updaterelawan/{id}', 'DonasiController@findRelawan');
@@ -82,7 +87,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 //Route::post('updatepenerima/{id}', 'DonasiController@updatePenerimaDonasi');
 //Route::get('getdonasi', 'DonasiController@index');
 //k::get('donasikomunitas', 'DonasiController@index');
-
 //Route::prefix('/user')->group( function(){
 //	Route::post('/login', 'Auth\LoginController@login');
 //	Route::post('/register', 'Auth\RegisterController@register');

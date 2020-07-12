@@ -423,6 +423,21 @@ class DonasiController extends Controller
 		]);
 	}
 
+	public function showAllDonasi()
+	{
+		// $donasi = Donasi::with('relawan.user', 'komunitas.user', 'penerimaDonasi')->get();
+		$donasi = Donasi::with('relawan.user', 'komunitas.user','penerimaDonasi')
+		->join('table_komunitas', 'table_komunitas.id', 'table_donasi.komunitas_id')
+		->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+		->join('users', 'users.id', 'table_donatur.user_id')
+		->select('table_donasi.*', 'users.name')
+		->get();
+
+		return response()->json([
+			'donasi' => $donasi
+		]);
+	}
+
 	public function showMakanan()
 	{
 		$makanan = Makanan::all();
