@@ -83,6 +83,40 @@ class RelawanController extends Controller
 		]);
 	}
 
+	public function historyRelawan()
+	{
+		$relawan = Relawan::where('user_id', Auth::user()->id)->first();
+		//$donasi = Donasi::join('users', 'users.id', 'table_donasi.relawan_id')
+		$dns = Donasi::with('makananDonasi.makanan.jenisMakanan')
+			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+			->join('users', 'users.id', 'table_donatur.user_id')
+			->select('table_donasi.*', 'users.name')
+			->where('relawan_id', $relawan->id)
+			->where('accDonasi', true)
+			->where('table_donasi.status', "Donasi telah disalurkan")
+			->get();
+
+		return response()->json([
+			'donasi' => $dns
+		]);
+	}
+
+	public function penerimaRelawan()
+	{
+		$relawan = Relawan::where('user_id', Auth::user()->id)->first();
+
+		$donasi = Donasi::join('table_penerima_donasi', 'table_penerima_donasi.id', 'table_donasi.penerima_id')
+			->join('table_donatur', 'table_donatur.id', 'table_donasi.donatur_id')
+			->join('users', 'users.id', 'table_donatur.user_id')
+			->select('users.name', 'table_penerima_donasi.*')
+			->where('relawan_id', $relawan->id)
+			->get();
+
+		return response()->json([
+			'penerima_donasi' => $donasi
+		]);
+	}
+
 	public function relawanInfo()
 	{
 		$relawan = Relawan::where('user_id', Auth::user()->id)

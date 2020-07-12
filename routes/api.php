@@ -68,6 +68,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/accbyrelawan', 'RelawanController@acceptByRelawan');
 	Route::get('/detailrelawan/{id}', 'RelawanController@showDataRelawan');
 	Route::get('/inforelawan', 'RelawanController@relawanInfo');
+	Route::get('/historyrelawan', 'RelawanController@historyRelawan');
+	Route::get('/penerimarelawan', 'RelawanController@penerimaRelawan');
 
 	Route::get('/penerimadonasi', 'PenerimaDonasiController@showPenerima');
 	Route::post('/closestpenerima', 'PenerimaDonasiController@closestPenerimaDonasi');
