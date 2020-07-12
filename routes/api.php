@@ -30,7 +30,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('/donasikomunitas', 'DonasiController@index');
 	Route::get('/donasikomunitas/{id}', 'DonasiController@showDetail');
 	Route::get('/listdonasi', 'DonasiController@listDonasi');
-	Route::get('/donasidonatur', 'DonaturController@index');
 	Route::get('/historydonasi', 'DonaturController@historyDonasi');
 	Route::put('/updatedonasi/{id}', 'DonasiController@updateDonasi');
 	Route::post('/createdonasi', 'DonasiController@createDonasi');
